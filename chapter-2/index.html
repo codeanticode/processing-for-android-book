@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Merriweather:300">
+        <link rel="icon" type="image/png" href="../favicon.png">
+        <link rel="stylesheet" href="../css/main.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>The Processing Language</title>
+    </head>
+    
+    <body>
+
+        <header>            
+            <h1 class="title">Processing for Android</h1>
+            <h2 class="title">Create Mobile, Sensor-Aware, and VR Applications Using Processing</h2>
+        </header>
+
+        <div class="group">
+
+            <nav class="site">
+                <ul class="leftnav">
+                   <li><a href="../index.html">Cover</a><span class="navsep">|</span></li>
+                   <li><a href="https://medium.com/@ben_fry/processing-for-android-bef5660769bf" target="_black">Preface</a><span class="navsep">|</span></li>
+                   <li><a id="selected" href="../contents.html">Contents</a><span class="navsep">|</span></li>
+                   <li><a href="https://github.com/Apress/processing-for-android" target="_black">Code examples</a><span class="navsep">|</span></li>
+                   <li><a href="../projects.html">Final projects</a><span class="navsep">|</span></li>
+                   <li><a href="http://www.tkqlhce.com/click-8456721-12831288?url=https%3A%2F%2Fwww.springer.com%2Fus%2Fbook%2F9781484227183%3Futm_medium%3Daffiliate%26utm_source%3Dcommission_junction%26utm_campaign%3D3_nsn6445_product_PID%25zp%26utm_content%3Dus_10092017&cjsku=9781484227183" target="_blank">Buy book</a></li>
+                </ul>
+            </nav>
+      
+            <section class="container main-text">
+                <h2>Chapter 2: The Processing Language</h2>
+
+                <p>If you are not familiar with the Processing language, read on this chapter for an introduction to the creation of 2-D shapes, use of geometry transformations and color, and handling touchscreen input. The chapter ends with a step-by-step example of a drawing sketch, which we will use in chapter 3 to learn how to export and upload an app created with Processing to the Play Store.</p>
+
+                <h3>A programming sketchbook for artists and designers</h3>
+
+                <p>
+                As we learned in the first chapter, the Processing language, in conjunction with the PDE, makes it easier for users who are new to programming to start creating interactive graphics. The language has been designed to be minimal and simple for learning and yet expressive enough to create code-based projects in diverse fields: generative art, data visualization, sound art, film, performance, etc. It includes around 200 functions across different categories: drawing, interaction, typography, etc., as well as several classes that help with the handling of form, color, and data.
+                </p>
+
+                <p>We can also see Processing as a “coding sketchbook”, analogous to a paper sketchbook that we use to quickly draft and refine ideas. An important part of this analogy is that, as with the paper sketchbook, Processing gives us the possibility of obtaining visual feedback from the code as quickly as possible is an essential feature of Processing. The next section describes the basic structure in Processing that allows us go easily generate animated output on the screen.</p> 
+
+                <h4>The setup/draw structure of a Processing sketch</h4>
+
+                <p>In most cases, we need our Processing sketches to run continuously in order to animate graphics on the screen and keep track of user input. We can implement such interactive sketches using a basic code structure where we first carry out all initialization operations inside a <code>setup()</code> function, and then run a <code>draw()</code> function every time Processing needs to render a new frame.</p>
+
+                <div class="butterbar">
+                Note: All the code examples in this chapter can be run in the Java or the Android mode, since they don’t rely on any features of the Processing language specific to either one. Since a requirement for this book is some level of knowledge of a programming language, here we will not go over the basic concepts of programming (e.g.: conditions, loops, comments).</div>
+
+                <p>With this structure, we can create an animation that is updated a fixed number of times per second, 60 by default. In each call of the <code>draw()</code> function, we need not only draw the visual elements that form our composition, but also perform all the calculations needed to update the composition. For example, in Listing 2-1, we draw a vertical line moving horizontally across the screen from left to right using the function <code>line(x, 0, x, height)</code>. The horizontal position of the line is the contained in the variable <code>x</code>, which we update in every frame with <code>x = (x + 1) % width</code>. In this line of code, we increment <code>x</code> by 1, and then calculate the result modulo the screen width. Since “a modulo b” is defined as the remainder of the integer division of a by b (for example 9 % 4 is 1), the result can only be a number between 0 and b-1. Hence, <code>x</code> in our sketch cannot be smaller than 0 nor greater than the width-1, which is exactly what we need: <code>x</code> increments in 1 unit at the time, and wraps back to 0 after reaching the right edge. The output of this sketch is shown in Figure 2-1.</p>
+
+
+<p>
+<strong>Listing 2-1.</strong> A sketch that draws a vertical line moving horizontally across the screen
+<pre><code>
+<span style="color: #E2661A;">int</span> x = 0;
+
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>setup</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">size</span>(600, 200);
+&nbsp;&nbsp;<span style="color: #006699;">strokeWeight</span>(2);
+&nbsp;&nbsp;<span style="color: #006699;">stroke</span>(255);  
+}
+
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>draw</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">background</span>(50);
+&nbsp;&nbsp;<span style="color: #006699;">line</span>(x, 0, x, <span style="color: #D94A7A;">height</span>);
+&nbsp;&nbsp;x&nbsp;=&nbsp;(x&nbsp;+&nbsp;1)&nbsp;%&nbsp;<span style="color: #D94A7A;">width</span>; 
+}
+</code></pre>
+</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-1.png" alt="Figure 1-1"></p><p><strong>Figure 2-1.</strong> Output of the animated line sketch</p>
+
+                <p>Processing calls the <code>draw()</code> function at a default frame rate of 60 frames per second, however, we can change this default using the function <code>frameRate(int fps)</code>. For instance, if we add adding <code>frameRate(1)</code> in <code>setup()</code>, then the sketch will draw 1 frame per second.</p>
+
+                <p>Sometimes, we may need to stop Processing from running its animation after a number of frames. We can use the <code>noLoop()</code> and <code>loop()</code> functions to stop and resume the animation, respectively. Processing has a “boolean” (logical) variable named looping which is true or false depending on whether or not the sketch is running the animation loop. We can add a simple keystroke detection to our previous code to stop/resume the sketch, which is implemented in Listing 2-2:</p>
+
+<p>
+<strong>Listing 2-2.</strong> Pausing/resuming the animation loop
+<pre><code>
+<span style="color: #E2661A;">int</span> x = 0;
+
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>setup</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">size</span>(600, 200); 
+&nbsp;&nbsp;<span style="color: #006699;">strokeWeight</span>(2);
+&nbsp;&nbsp;<span style="color: #006699;">stroke</span>(255);  
+}
+
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>draw</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">background</span>(50);
+&nbsp;&nbsp;<span style="color: #006699;">line</span>(x, 0, x, <span style="color: #D94A7A;">height</span>);
+&nbsp;&nbsp;x&nbsp;=&nbsp;(x&nbsp;+&nbsp;1)&nbsp;%&nbsp;<span style="color: #D94A7A;">width</span>; 
+}
+
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>keyPressed</b></span>() {
+&nbsp;&nbsp;<span style="color: #669900;">if</span> (looping) { 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">noLoop</span>();
+&nbsp;&nbsp;}&nbsp;<span style="color: #669900;">else</span> { 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">loop</span>();
+&nbsp;&nbsp;}
+}
+</code></pre>
+</p>
+
+               <p>In addition to these interactive sketches, we can also create “static” sketches without setup/draw, which are typically useful if we are only want to generate a fixed composition that does not need to be updated. Processing runs the code in these sketches only one time. Listing 2-3 contains a simple static sketch that draws the white circle in Figure 2-2.</p>
+
+<p>
+<strong>Listing 2-3.</strong> Static sketch without setup() and draw() functions
+<pre><code>
+<span style="color: #006699;">size</span>(200, 200); 
+<span style="color: #006699;">ellipse</span>(100, 100, 150, 150);
+</code></pre>
+</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-2.png" alt="Figure 2-2"></p><p><strong>Figure 2-2.</strong> Output of the static sketch</p>
+
+                <h3>Drawing with code</h3>
+
+                <p>The examples from the previous section point to some important concepts in code-based drawing. First, we need to specify the coordinates of the elements we want to draw on the screen, second, there are functions, such as <code>line()</code>, that allow us to draw various graphical primitives or shapes by setting the appropriate numerical values that define the shapes, and third, we can set the visual “style” of these shapes (e.g.: stroke color and weight).</p>
+
+                <p>In Processing, we can draw shapes of different kinds (points, lines, polygons) and with certain attributes (stroke weight and color, fill color, etc.) These attributes can be thought as “style parameters” that once they are set, affect everything drawn afterwards. For example, each circle in Listing 2-4 has a different fill color, but if we comment out the second <code>fill()</code> call, then the first and second circles will be red, since the fill color set at the beginning affects the first two ellipse calls. Figure 2-3 shows the output of this sketch in these situations.</p>
+
+<p>
+<strong>Listing 2-4.</strong> Setting style attributes
+<pre><code>
+<span style="color: #006699;">size</span>(460, 200);
+<span style="color: #006699;">strokeWeight</span>(5);
+<span style="color: #006699;">fill</span>(255, 0, 0);
+<span style="color: #006699;">stroke</span>(0, 255, 0);
+<span style="color: #006699;">ellipse</span>(100, 100, 200, 200);
+<span style="color: #006699;">fill</span>(255, 0, 200); <span style="color: #666666;">// Comment this line out to make second circle red</span>
+<span style="color: #006699;">stroke</span>(0);
+<span style="color: #006699;">ellipse</span>(250, 100, 100, 100);
+<span style="color: #006699;">fill</span>(0, 200, 200); 
+<span style="color: #006699;">ellipse</span>(380, 100, 160, 160);
+</code></pre>
+</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-3.png" alt="Figure 2-3"></p><p><strong>Figure 2-3.</strong> Effect of the calling order of style functions</p>
+
+                <h4>Screen coordinates</h4>
+
+                <p>Processing draws its graphical output into a rectangular grid of pixels, numbered from 0 to width – 1 along the horizontal direction (the X axis), and 0 to height – 1 along the vertical direction (the Y axis), as illustrated in Figure 2-4. This grid will be contained in a separate output window when running the code in the Java mode, or centered in the device’s screen when using the Android mode.</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-4.png" alt="Figure 2-4"></p><p><strong>Figure 2-4.</strong> Diagram of the screen’s pixels</p>
+
+                <p>When drawing with Processing, we need to keep in mind that X coordinates run from left to right, while the Y coordinates run from top to bottom. So, the pixel (0, 0) represents the upper left corner of the screen, and the pixel (width-1, height-1) represents the lower right corner. The arguments of most of the 2-D drawing functions in Processing refer to the pixel coordinates of the screen. For example, the following sample code would produce the output in Figure 2-5 (where each square represents a single pixel for clarity):</p>
+
+<pre><code>
+stroke(200, 0, 0);
+fill(100, 200, 100);
+rect(2, 1, width – 1, height - 2);
+</code></pre>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-5.png" alt="Figure 2-5"></p><p><strong>Figure 2-5.</strong> Pixels covered by a stroked rectangle in Processing</p>
+
+                <p>We should size the shapes we draw with Processing according to the constraints of our screen size. In general, it is recommended to use the width and height internal variables when referring to the size of the screen instead of the actual values, in this way we can readjust the size without having to modify the drawing code, as it is done in Listing 2-5.</p>
+
+<p>
+<strong>Listing 2-5.</strong> Using screen coordinates
+<pre><code>
+<span style="color: #006699;">size</span>(800, 800);
+<span style="color: #006699;">stroke</span>(0);
+<span style="color: #006699;">fill</span>(180);  
+<span style="color: #006699;">background</span>(97);
+<span style="color: #006699;">line</span>(<span style="color: #D94A7A;">width</span>/2, 0, <span style="color: #D94A7A;">width</span>/2, <span style="color: #D94A7A;">height</span>);
+<span style="color: #006699;">line</span>(0, <span style="color: #D94A7A;">height</span>/2, <span style="color: #D94A7A;">width</span>, <span style="color: #D94A7A;">height</span>/2);  
+<span style="color: #006699;">rect</span>(0, 0, 200, 200);
+<span style="color: #006699;">rect</span>(<span style="color: #D94A7A;">width</span> - 200, 0, 199, 200);
+<span style="color: #006699;">rect</span>(<span style="color: #D94A7A;">width</span> - 200, <span style="color: #D94A7A;">height</span> - 200, 199, 199);
+<span style="color: #006699;">rect</span>(0, <span style="color: #D94A7A;">height</span> - 200, 199, 199);  
+<span style="color: #006699;">rect</span>(200, 200, <span style="color: #D94A7A;">width</span> - 400, <span style="color: #D94A7A;">height</span> - 400);
+</code></pre>
+</p>
+
+                <p>In this code, some rectangles have an unusual width/height of 199. This is so the stroke lines on the outer border of the screen are visible since, as we just saw, the x coordinate of the last row/column of pixels are height-1/width-1. The sketch’s output, with all the outer strokes falling on the edge pixels, is shown in Figure 2-6, as it would appear on a Nexus 5X phone. You can also notice that this output only occupies a screen-centered 800x800 square, since that’s the size we specified in the code. We will see later in this chapter how to use the entire screen and, in chapter 4, how to scale our graphics according to the device’s resolution.</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-6.png" alt="Figure 2-6"></p><p><strong>Figure 2-6.</strong> Output of code Listing 2-5, on a Nexus 5X phone</p>
+
+                <h4>Form</h4>
+
+                <p>All visual forms we can generate with Processing are drawn as 2 or 3-dimensional shapes. Typically, we construct these shapes by explicitly specifying all the vertices that define their boundaries inside the <code>beginShape()</code> and <code>endShape()</code> functions, as shown in Listing 2-6 (and whose output is presented in Figure 2-7):</p>
+
+
+<p>
+<strong>Listing 2-6.</strong> Using beginShape() and endShape()
+<pre><code>
+<span style="color: #006699;">size</span>(600, 300);  
+
+<span style="color: #006699;">beginShape</span>(<span style="color: #718A62;">QUADS</span>);
+<span style="color: #006699;">vertex</span>(5, 250);
+<span style="color: #006699;">vertex</span>(590, 250);
+<span style="color: #006699;">vertex</span>(590, 290);
+<span style="color: #006699;">vertex</span>(5, 290);
+<span style="color: #006699;">endShape</span>();
+&nbsp;&nbsp;
+<span style="color: #006699;">beginShape</span>();
+<span style="color: #006699;">vertex</span>(30, 25);
+<span style="color: #006699;">vertex</span>(90, 90);
+<span style="color: #006699;">vertex</span>(210, 10);
+<span style="color: #006699;">vertex</span>(160, 120);  
+<span style="color: #006699;">vertex</span>(210, 270);  
+<span style="color: #006699;">vertex</span>(110, 180);
+<span style="color: #006699;">vertex</span>(10, 270);
+<span style="color: #006699;">vertex</span>(60, 150);
+<span style="color: #006699;">endShape</span>(<span style="color: #718A62;">CLOSE</span>);  
+
+<span style="color: #006699;">beginShape</span>(<span style="color: #718A62;">TRIANGLES</span>);
+<span style="color: #006699;">vertex</span>(50, 30);
+<span style="color: #006699;">vertex</span>(90, 75);
+<span style="color: #006699;">vertex</span>(110, 30);
+<span style="color: #006699;">endShape</span>(); 
+&nbsp;&nbsp;
+<span style="color: #006699;">ellipse</span>(470, 80, 70, 70);
+</code></pre>
+</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-7.png" alt="Figure 2-7"></p><p><strong>Figure 2-7.</strong> Composition created with several shapes</p>
+
+                <p>Even though we did not use beginShape/endShape in our first examples, where we created primitive shapes with the built-in functions ellipse() and rect(), these are nothing more that short-hand calls for their corresponding beginShape/endShape calls. We can in fact create other type of primitive shapes types using <p>beginShape(int kind)</p>, where the kind argument indicates the desired primitive. For example, in Listing 2-7, we construct a regular polygon with a fan of triangles spanning from a central vertex:</p>
+
+<p>
+<strong>Listing 2-7.</strong> Creating a triangle fan
+<pre><code>
+<span style="color: #006699;">size</span>(300, 300); 
+<span style="color: #E2661A;">int</span> numTriangles = 10;
+<span style="color: #006699;">beginShape</span>(<span style="color: #718A62;">TRIANGLE_FAN</span>);
+<span style="color: #006699;">vertex</span>(<span style="color: #D94A7A;">width</span>/2, <span style="color: #D94A7A;">height</span>/2);
+<span style="color: #669900;">for</span> (<span style="color: #E2661A;">int</span> i = 0; i &lt;= numTriangles; i++) {
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> a = <span style="color: #006699;">map</span>(i, 0, numTriangles, 0, <span style="color: #718A62;">TWO_PI</span>);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x = <span style="color: #D94A7A;">width</span>/2 + 100 * <span style="color: #006699;">cos</span>(a);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y = <span style="color: #D94A7A;">height</span>/2 + 100 * <span style="color: #006699;">sin</span>(a);
+&nbsp;&nbsp;<span style="color: #006699;">vertex</span>(x, y);
+}
+<span style="color: #006699;">endShape</span>();
+</code></pre>
+</p>
+
+                <p>In this example, we use a for loop to iterate over the number of divisions of the triangle fan. Processing, as an extension of the Java language, inherits all the control structures from Java, which we need for algorithmic drawing. Also, notice the use of the function map(), which is part of the Processing API. This function is very useful and allows us to convert a numeric value within a range to the corresponding value in a different range. In this case, the index i varies between 0 and numTriangles, and we want to transform it into an angle between 0 and 2π.</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-8.png" alt="Figure 2-8"></p><p><strong>Figure 2-8.</strong> Outputs of the triangle fan example for different number of vertices</p>
+
+                <p>Other kind of primitive shapes are <code>TRIANGLE_STRIP</code>, <code>QUAD_STRIP</code>, <code>LINES</code> and <code>POINTS</code>, which are all fully documented in <a href="https://processing.org/reference/" target="_black">Processing’s reference</a>. For instance, <code>QUAD_STRIP</code> becomes handy when one needs to create a rectangular grid, or a hollowed-out circle like we do in Listing 2-8.</p>
+
+<p>
+<strong>Listing 2-8.</strong> Creating a quad strip
+<pre><code>
+<span style="color: #006699;">size</span>(300, 300);  
+<span style="color: #006699;">beginShape</span>(<span style="color: #718A62;">QUAD_STRIP</span>);
+<span style="color: #E2661A;">int</span> numQuads = 10;
+<span style="color: #669900;">for</span> (<span style="color: #E2661A;">int</span> i = 0; i &lt;= numQuads; i++) {
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> a = <span style="color: #006699;">map</span>(i, 0, numQuads, 0, <span style="color: #718A62;">TWO_PI</span>);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x0 = <span style="color: #D94A7A;">width</span>/2 + 100 * <span style="color: #006699;">cos</span>(a);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y0 = <span style="color: #D94A7A;">height</span>/2 + 100 * <span style="color: #006699;">sin</span>(a);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x1 = <span style="color: #D94A7A;">width</span>/2 + 130 * <span style="color: #006699;">cos</span>(a);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y1 = <span style="color: #D94A7A;">height</span>/2 + 130 * <span style="color: #006699;">sin</span>(a);    
+&nbsp;&nbsp;<span style="color: #006699;">vertex</span>(x0, y0);
+&nbsp;&nbsp;<span style="color: #006699;">vertex</span>(x1, y1);
+}
+<span style="color: #006699;">endShape</span>();
+</code></pre>
+</p>
+
+                <p>By adjusting the value of the numQuads variable, we can obtain geometries of increasing detail, as seen in Figure 2-9:</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-9.png" alt="Figure 2-9"></p><p><strong>Figure 2-9.</strong> Quad strip example with different values for numQuads</p>
+
+                <p>However, often times we need create more complex shapes, such as curves. Even though we could calculate the vertices along the curves manually, Processing provides a number of functions that do precisely that for us, specifically for Catmull-Rom splines, quadratic and cubic Bezier curves. The <code>bezierVertex()</code> function, for instance, allows us to define a point on a cubic Bezier curve. It requires the anchor point the curve must pass through, and the control points defining the starting and ending directions. When starting a Bezier curve, the first anchor is set with a regular <code>vertex()</code> call, as shown in Figure 2-10:</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-10.png" alt="Figure 2-10"></p><p><strong>Figure 2-10.</strong> Parameters of the bezierVertex() function</p>
+
+                <p>We can combine several Bezier curves in a single shape in order to generate more complex figures, as shown in Listing 2-9.</p>
+
+<p>
+<strong>Listing 2-9.</strong> Creating multi-lobed shape with Bezier curves
+<pre><code>
+<span style="color: #006699;">size</span>(300, 300);
+<span style="color: #E2661A;">int</span> numLobes = 4;
+<span style="color: #E2661A;">float</span> radAnchor = 50;
+<span style="color: #E2661A;">float</span> radControl = 150; 
+<span style="color: #E2661A;">float</span> centerX = <span style="color: #D94A7A;">width</span>/2;
+<span style="color: #E2661A;">float</span> centerY = <span style="color: #D94A7A;">height</span>/2;
+<span style="color: #006699;">beginShape</span>();
+<span style="color: #669900;">for</span> (<span style="color: #E2661A;">int</span> i = 0; i &lt; numLobes; i++) {
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> a = <span style="color: #006699;">map</span>(i, 0, numLobes, 0, <span style="color: #718A62;">TWO_PI</span>);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> a1 = <span style="color: #006699;">map</span>(i + 1, 0, numLobes, 0, <span style="color: #718A62;">TWO_PI</span>);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> cx0 = centerX + radControl * <span style="color: #006699;">cos</span>(a);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> cy0 = centerY + radControl * <span style="color: #006699;">sin</span>(a);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> cx1 = centerX + radControl * <span style="color: #006699;">cos</span>(a1);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> cy1 = centerY + radControl * <span style="color: #006699;">sin</span>(a1);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x0 = centerX + radAnchor * <span style="color: #006699;">cos</span>(a); 
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y0 = centerY + radAnchor * <span style="color: #006699;">sin</span>(a);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x1 = centerX + radAnchor * <span style="color: #006699;">cos</span>(a1); 
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y1 = centerY + radAnchor * <span style="color: #006699;">sin</span>(a1);    
+&nbsp;&nbsp;<span style="color: #006699;">vertex</span>(x0, y0);
+&nbsp;&nbsp;<span style="color: #006699;">bezierVertex</span>(cx0, cy0, cx1, cy1, x1, y1);
+}
+<span style="color: #006699;">endShape</span>();
+</code></pre>
+</p>
+
+                <p>By playing with the parameters in this sketch (number of lobes, radius of the anchor points, radius of the control points), we can obtain an entire family of shapes, some of which we can see in Figure 2-11:</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-11.png" alt="Figure 2-11"></p><p><strong>Figure 2-11.</strong> Family of multi-lobed shapes created with Bezier curves</p>
+
+                <h4>Color</h4>
+
+                <p>Color is another important component in visual design, and Processing provides numerous functions to set the color of the interior of shapes (the fill color) and their edges (the stroke color), in addition to the background color of the entire output screen.</p>
+
+                <p>By default, we can set colors using RGB (red, green, and blue) values between 0 and 255, as illustrated in the code of Listing 2-10, and its output in Figure 2-12.</p>
+
+<p>
+<strong>Listing 2-10.</strong> Setting fill and stroke colors using RGB values
+<pre><code>
+<span style="color: #006699;">size</span>(600, 300);
+<span style="color: #006699;">strokeWeight</span>(5);
+<span style="color: #006699;">fill</span>(214, 87, 58);
+<span style="color: #006699;">stroke</span>(53, 124, 115);
+<span style="color: #006699;">rect</span>(10, 10, 180, 280);
+<span style="color: #006699;">stroke</span>(115, 48, 128);
+<span style="color: #006699;">fill</span>(252, 215, 51);
+<span style="color: #006699;">rect</span>(210, 10, 180, 280);
+<span style="color: #006699;">stroke</span>(224, 155, 73);
+<span style="color: #006699;">fill</span>(17, 76, 131);
+<span style="color: #006699;">rect</span>(410, 10, 180, 280);
+</code></pre>
+</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-12.png" alt="Figure 2-12"></p><p><strong>Figure 2-12.</strong> Output of setting stroke and fill RGB colors</p>
+
+                <p>Even though we can create almost any imaginable color using the RGB values, it can be hard to find the right combination of numbers for the color we need. Processing includes a handy Color Selector tool to help us to pick a color interactively, which we can then copy into our sketches as RGB values. The Color Selector is available, alongside any other installed tool, under the “Tools” menu in the PDE (Figure 2-13).</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-13.png" alt="Figure 2-13"></p><p><strong>Figure 2-13.</strong> Color selector tool</p>
+
+                <p>We can also specify colors in the HSB (Hue, Saturation and Brightness) space. The HSB mode can be set with the <code>colorMode()</code> function, which also allow us to set the ranges for each component. In code Listing 2-11, we draw a color wheel by mapping the position around a circle to the color hue.</p>
+
+<p>
+<strong>Listing 2-11.</strong> Drawing a color wheel using HSB values
+<pre><code>
+<span style="color: #006699;">size</span>(300, 300);
+<span style="color: #006699;">colorMode</span>(<span style="color: #718A62;">HSB</span>, <span style="color: #718A62;">TWO_PI</span>, 1, 1);
+<span style="color: #E2661A;">float</span> centerX = <span style="color: #D94A7A;">width</span>/2;
+<span style="color: #E2661A;">float</span> centerY = <span style="color: #D94A7A;">height</span>/2;
+<span style="color: #E2661A;">float</span> maxRad = <span style="color: #D94A7A;">width</span>/2;
+<span style="color: #006699;">strokeWeight</span>(2);
+<span style="color: #006699;">stroke</span>(0, 0, 1);
+<span style="color: #669900;">for</span> (<span style="color: #E2661A;">int</span> i = 0; i &lt; 6; i++) {
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> r0 = <span style="color: #006699;">map</span>(i, 0, 6, 0, 1);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> r1 = <span style="color: #006699;">map</span>(i + 1, 0, 6, 0, 1);
+&nbsp;&nbsp;<span style="color: #006699;">beginShape</span>(<span style="color: #718A62;">QUADS</span>);
+&nbsp;&nbsp;<span style="color: #669900;">for</span> (<span style="color: #E2661A;">int</span> j = 0; j &lt;= 10; j++) {
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> a0 = <span style="color: #006699;">map</span>(j, 0, 10, 0, <span style="color: #718A62;">TWO_PI</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> a1 = <span style="color: #006699;">map</span>(j + 1, 0, 10, 0, <span style="color: #718A62;">TWO_PI</span>);  
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x0 = centerX + maxRad * r0 * <span style="color: #006699;">cos</span>(a0);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y0 = centerY + maxRad * r0 * <span style="color: #006699;">sin</span>(a0);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x1 = centerX + maxRad * r1 * <span style="color: #006699;">cos</span>(a0);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y1 = centerY + maxRad * r1 * <span style="color: #006699;">sin</span>(a0);  
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x2 = centerX + maxRad * r1 * <span style="color: #006699;">cos</span>(a1);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y2 = centerY + maxRad * r1 * <span style="color: #006699;">sin</span>(a1);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x3 = centerX + maxRad * r0 * <span style="color: #006699;">cos</span>(a1);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y3 = centerY + maxRad * r0 * <span style="color: #006699;">sin</span>(a1);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">fill</span>(a0, r0, 1);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">vertex</span>(x0, y0);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">vertex</span>(x1, y1);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">vertex</span>(x2, y2);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">vertex</span>(x3, y3);
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span style="color: #006699;">endShape</span>();
+}
+</code></pre>
+</p>
+
+                <p>Let’s note a few important things in this example. First, we set the range for the hue to 2π, in order to make the transformation between indices and color more direct. Second, we use <code>QUADS</code> instead of <code>QUAD_STRIP</code>. The reason is that we would not be able to set separate colors for each quad in a strip, because they all share a common edge with the previous and next quad. Instead, in a <code>QUADS</code> shape, each quad is defined independently of the others and so can have different style attributes. Our final color wheel is shown in Figure 2-14.</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-14.png" alt="Figure 2-14"></p><p><strong>Figure 2-14.</strong> Output of HSB color wheel example</p>
+
+                <div class="butterbar">
+                Note: We can also specify colors in hexadecimal (hex) format, very common in web development, i.e.: fill(#FF0000) or stroke(#FFFFFF).</div>  
+
+                <h4>Geometric transformations</h4>
+
+                <p>So far, we have seen how to construct shapes and pick their colors. In addition to all of this, we also need to be able to move them around and chance their size by applying translations, rotations, and scaling transformations (Figure 2-15).</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-15.png" alt="Figure 2-15"></p><p><strong>Figure 2-15.</strong> The three types of geometric transformations</p>
+
+                <p>While the ideas of translation, rotation, and scaling are intuitive, it is harder to anticipate the effect of several consecutive transformations. It can help us thinking about transformations to imagine that a transformation actually affects the coordinate axis after it has been applied. For instance, if we apply a translation of 20 units along the X-axis and 30 units along the Y-axis, then a subsequent rotation will occur around the point (20, 30). Conversely, if the rotation is applied first, the axes will then be rotated and a translation will occur along the rotated axes. As a consequence, if we draw a shape at the end of this chain of transformations, its final positon may be different depending on their order (Figure 2-16).</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-16.png" alt="Figure 2-16"></p><p><strong>Figure 2-16.</strong> Geometric transformations cannot be exchanged</p>
+
+                <p>We can save the current transformation “state” with the <code>pushMatrix()</code> function, and restore it with the corresponding <code>popMatrix()</code> function. We must always use these two functions in pairs, and allow us to create complex relative movements by setting transformations only to specific subsets of the shapes. For example, Listing 2-12 generates an animation of an ellipse and square rotating around a larger square placed at the center of the screen, with the smaller square also rotating around its own center. Figure 2-17 shows a snapshot of this animation.</p>
+
+<p>
+<strong>Listing 2-12.</strong> Using pushMatrix() and popMatrix()
+<pre><code>
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>setup</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">size</span>(400, 400);
+&nbsp;&nbsp;<span style="color: #006699;">rectMode</span>(<span style="color: #718A62;">CENTER</span>);
+&nbsp;&nbsp;<span style="color: #006699;">noStroke</span>();
+}
+
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>draw</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">background</span>(170);
+&nbsp;&nbsp;<span style="color: #006699;">translate</span>(<span style="color: #D94A7A;">width</span>/2, <span style="color: #D94A7A;">height</span>/2);
+&nbsp;&nbsp;<span style="color: #006699;">rotate</span>(angle);
+&nbsp;&nbsp;<span style="color: #006699;">rect</span>(0, 0, 100, 100);
+&nbsp;&nbsp;<span style="color: #006699;">pushMatrix</span>();
+&nbsp;&nbsp;<span style="color: #006699;">translate</span>(150, 0);  
+&nbsp;&nbsp;<span style="color: #006699;">rotate</span>(2 * angle);
+&nbsp;&nbsp;<span style="color: #006699;">scale</span>(0.5);
+&nbsp;&nbsp;<span style="color: #006699;">rect</span>(0, 0, 100, 100);
+&nbsp;&nbsp;<span style="color: #006699;">popMatrix</span>();
+&nbsp;&nbsp;<span style="color: #006699;">translate</span>(0, 180);
+&nbsp;&nbsp;<span style="color: #006699;">ellipse</span>(0, 0, 30, 30);
+&nbsp;&nbsp;angle&nbsp;+=&nbsp;0.01;
+}
+</code></pre>
+</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-17.png" alt="Figure 2-17"></p><p><strong>Figure 2-17.</strong> Using pushMatrix() and popMatrix() to keep transformations separate</p>
+
+                <h3>Responding to user input</h3>
+
+                <p>Keyboard and touchscreen input (among other options) allows us to enter information into the sketch in order to control its behavior. Since the user can touch the screen or press a key at any moment, not necessarily when Processing is drawing a frame, we need a way to retrieve this information no matter what stage of drawing we are in our sketch.</p>
+
+                <p>Processing provides several built-in variables and functions to handle user input. The variables <code>mouseX</code> and <code>mouseY</code> give us the current position of the mouse when working in the Java mode. These variables are still available in the Android mode, although mobile devices do not usually have a mouse. In this case, they just represent the position of the first touch point on the screen (Processing also supports multi-touch interaction, which is covered in chapter 5). Both <code>mouseX/Y</code> are complemented with <code>mousePressed</code>, which indicates whether or not the mouse/touchscreen is being pressed. Using these variables, we can create a simple drawing sketch with very little code, like the one in Listing 2-13. Its output on a phone would look like in Figure 2-18. Since the width and height set with the <code>size()</code> function is smaller than the screen resolution, we see the output area surrounded by a light background we cannot draw to. However, we can use the entire screen if instead of initializing the sketch with <code>size(width, height)</code>, we use the <code>fullScreen()</code> function. This also has the advantage of hiding the status bar at the top of the screen, and the navigation bar at the bottom.</p>
+
+<p>
+<strong>Listing 2-13.</strong> A free-hand drawing sketch using circles
+<pre><code>
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>setup</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">size</span>(1000, 500);
+&nbsp;&nbsp;<span style="color: #006699;">noStroke</span>();
+&nbsp;&nbsp;<span style="color: #006699;">fill</span>(255, 100);
+}
+
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>draw</b></span>() {
+&nbsp;&nbsp;<span style="color: #669900;">if</span> (<span style="color: #D94A7A;">mousePressed</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">ellipse</span>(<span style="color: #D94A7A;">mouseX</span>, <span style="color: #D94A7A;">mouseY</span>, 50, 50);
+&nbsp;&nbsp;}
+}
+</code></pre>
+</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-18.png" alt="Figure 2-18"></p><p><strong>Figure 2-18.</strong> Drawing with ellipses</p>
+
+                <p>While <code>mouseX/Y</code> stores the current position of the mouse/touch, Processing also provides the variables <code>pmouseX</code> and <code>pmouseY</code>, which store the previous position. By connecting the <code>pmouseX/Y</code> coordinates with the current ones in <code>mouseX/Y</code>, we are able to draw continuous lines that follow the movement of the pointer. Listing 2-14 illustrates this technique, and also uses <code>fullScreen()</code> so we can draw on the entire screen surface, as seen in Figure 2-19.</p>
+
+
+<p>
+<strong>Listing 2-14.</strong> Another free-hand drawing sketch
+<pre><code>
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>setup</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">fullScreen</span>();
+}
+
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>draw</b></span>() {
+&nbsp;&nbsp;<span style="color: #669900;">if</span> (<span style="color: #D94A7A;">mousePressed</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">line</span>(<span style="color: #D94A7A;">pmouseX</span>, <span style="color: #D94A7A;">pmouseY</span>, <span style="color: #D94A7A;">mouseX</span>, <span style="color: #D94A7A;">mouseY</span>);
+&nbsp;&nbsp;}
+}
+</code></pre>
+</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-19.png" alt="Figure 2-19"></p><p><strong>Figure 2-19.</strong> Output of our simple drawing sketch, in full screen mode</p>
+
+                <h3>Creating a “vine drawing” app</h3>
+
+                <p>Our goal in this final section is to code a drawing app that incorporates algorithmic shapes into the hand-drawn lines. One possibility is to augment the scaffold provided by the lines with shapes that resemble growing vegetation, vines, leaves, and flowers. The Bezier curves we learned about earlier could be used to generate organic-looking shapes. Some sketching with pen and paper (Figure 2-20) may also help us to try out some visual ideas:</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-20.png" alt="Figure 2-20"></p><p><strong>Figure 2-20.</strong> Sketches for the vine drawing app</p>
+
+                <p>We can build on top of our previous sketches. One thing we were missing before is some degree of “randomness” in both form and color. The <code>random(float a, float b)</code> function in Processing allow us to draw random numbers between a and b, which we can use in the leaf/flower shapes constructed via the <code>bezierVertex()</code> function. In Listing 2-15, we apply the random function to introduce variation in the color and also in the number of lobes of our shapes, and Figure 2-21 shows the output of this sketch for three separate runs.</p> 
+
+<p>
+<strong>Listing 2-15.</strong> Generating randomized flowers/leafs with Bezier Curves
+<pre><code>
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>setup</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">size</span>(600, 160);  
+&nbsp;&nbsp;<span style="color: #006699;">frameRate</span>(1);
+}
+
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>draw</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">background</span>(180);
+&nbsp;&nbsp;drawFlower(100,&nbsp;80);
+&nbsp;&nbsp;drawFlower(300,&nbsp;80);
+&nbsp;&nbsp;drawFlower(500,&nbsp;80);&nbsp;&nbsp;
+}
+
+<span style="color: #33997E;">void</span> drawFlower(<span style="color: #E2661A;">float</span> posx, <span style="color: #E2661A;">float</span> posy) {
+&nbsp;&nbsp;<span style="color: #006699;">pushMatrix</span>();
+&nbsp;&nbsp;<span style="color: #006699;">translate</span>(posx, posy);
+&nbsp;&nbsp;<span style="color: #006699;">fill</span>(<span style="color: #006699;">random</span>(255), <span style="color: #006699;">random</span>(255), <span style="color: #006699;">random</span>(255), 200);
+&nbsp;&nbsp;<span style="color: #006699;">beginShape</span>();
+&nbsp;&nbsp;<span style="color: #E2661A;">int</span> n = <span style="color: #006699;">int</span>(<span style="color: #006699;">random</span>(4, 10)); 
+&nbsp;&nbsp;<span style="color: #669900;">for</span> (<span style="color: #E2661A;">int</span> i = 0; i &lt; n; i++) {
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> a = <span style="color: #006699;">map</span>(i, 0, n, 0, <span style="color: #718A62;">TWO_PI</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> a1 = <span style="color: #006699;">map</span>(i + 1, 0, n, 0, <span style="color: #718A62;">TWO_PI</span>);    
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> r = <span style="color: #006699;">random</span>(10, 100);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x = r * <span style="color: #006699;">cos</span>(a);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y = r * <span style="color: #006699;">sin</span>(a);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x1 = r * <span style="color: #006699;">cos</span>(a1);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y1 = r * <span style="color: #006699;">sin</span>(a1);     
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">vertex</span>(0, 0);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">bezierVertex</span>(x, y, x1, y1, 0, 0);     
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span style="color: #006699;">endShape</span>();
+&nbsp;&nbsp;<span style="color: #006699;">popMatrix</span>();
+}
+</code></pre>
+</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-21.png" alt="Figure 2-21"></p><p><strong>Figure 2-21.</strong> Output of the flower/leaf sketch</p>
+
+                <p>In addition to the flowers/leaves, we can add some additional elements, for instance a growing “spiral” branch that finishes in a fruit. Spirals have a parametric formula (https://www.khanacademy.org/tag/parametric-equations) of the form x(t) = r(t) cos(a(t)), y(t) = r(t) sin(a(t)), where the parameter t goes from 0 to 1 and controls the “growth” the curve. After tweaking with the radial function, I reached a satisfactory growth behavior with r(t) = 1/t, so we can start with the code in Listing 2-16 to draw a single spiral (Figure 2-22).</p>
+
+<p>
+<strong>Listing 2-16.</strong> Drawing a spiral using parametric equations
+<pre><code>
+<span style="color: #006699;">size</span>(300, 300);
+<span style="color: #006699;">noFill</span>();
+<span style="color: #006699;">translate</span>(<span style="color: #D94A7A;">width</span>/2, <span style="color: #D94A7A;">height</span>/2);
+<span style="color: #006699;">beginShape</span>();
+<span style="color: #E2661A;">float</span> maxt = 10;
+<span style="color: #E2661A;">float</span> maxr = 150;
+<span style="color: #669900;">for</span> (<span style="color: #E2661A;">float</span> t = 1; t &lt; maxt; t += 0.1) {
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> r = maxr/t;
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x = r  * <span style="color: #006699;">cos</span>(t);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y = r  * <span style="color: #006699;">sin</span>(t);
+&nbsp;&nbsp;<span style="color: #006699;">vertex</span>(x, y);
+}
+<span style="color: #006699;">endShape</span>();
+</code></pre>
+</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-22.png" alt="Figure 2-22"></p><p><strong>Figure 2-22.</strong> Output of our spiral parametric equation sketch</p>
+
+                <p>The number of turns is controlled by the maximum value of the parameter t, while the maximum radius determines how much the spiral extends outwards. These two parameters will give us some visual variation. One issue is that we will need the stem of the spiral to be aligned with the direction of the line drawing. We can orient the spiral along a desired angle direction by rotating by the angle plus 180 degrees (π). This is what we do in Listing 2-17, with three different spirals generated by it in Figure 2-23.</p>.
+
+<p>
+<strong>Listing 2-17.</strong> Drawing a spiral using parametric equations
+<pre><code>
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>setup</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">size</span>(600, 160);  
+&nbsp;&nbsp;<span style="color: #006699;">frameRate</span>(1);
+}
+
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>draw</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">background</span>(180);
+&nbsp;&nbsp;drawSpiral(100,&nbsp;80,&nbsp;0);
+&nbsp;&nbsp;drawSpiral(300,&nbsp;80,&nbsp;<span style="color: #718A62;">QUARTER_PI</span>);
+&nbsp;&nbsp;drawSpiral(500,&nbsp;80,&nbsp;<span style="color: #718A62;">PI</span>);
+}
+
+<span style="color: #33997E;">void</span> drawSpiral(<span style="color: #E2661A;">float</span> posx, <span style="color: #E2661A;">float</span> posy, <span style="color: #E2661A;">float</span> angle) {
+&nbsp;&nbsp;<span style="color: #006699;">pushMatrix</span>();
+&nbsp;&nbsp;<span style="color: #006699;">translate</span>(posx, posy);  
+&nbsp;&nbsp;<span style="color: #006699;">rotate</span>(angle + <span style="color: #718A62;">PI</span>);
+&nbsp;&nbsp;<span style="color: #006699;">noFill</span>();
+&nbsp;&nbsp;<span style="color: #006699;">beginShape</span>();
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> maxt = <span style="color: #006699;">random</span>(5, 20);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> maxr = <span style="color: #006699;">random</span>(50, 70);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x0 = maxr * <span style="color: #006699;">cos</span>(1);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y0 = maxr * <span style="color: #006699;">sin</span>(1);
+&nbsp;&nbsp;<span style="color: #669900;">for</span> (<span style="color: #E2661A;">float</span> t = 1; t &lt; maxt; t += 0.1) {
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> r = maxr/t;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x = r  * <span style="color: #006699;">cos</span>(t) - x0;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y = r  * <span style="color: #006699;">sin</span>(t) - y0;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">vertex</span>(x, y);
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span style="color: #006699;">endShape</span>();
+&nbsp;&nbsp;<span style="color: #006699;">popMatrix</span>();
+}
+</code></pre>
+</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-23.png" alt="Figure 2-23"></p><p><strong>Figure 2-23.</strong> Output of the randomized spirals sketch</p>
+
+                <p>We can now put together all these elements in a simple drawing app that adds leaves, vines, and fruits to the hand-drawn line (Listing 2-18). Leaves and vines are randomly added when the mouse/touchscreen is pressed with a probability of 0.05 (so slowly moving lines will have more vegetation). The angle of the spiral vines to the last line segment is calculated by constructing a <code>PVector</code> object from the difference between the current and last mouse/touch positions. <code>PVector</code> is a built-in class in Processing to handle 2D and 3D vectors. This class contains several utility functions, one of which give us the heading angle of the vector, that is, the angle of the vector along the X-axis. Figure 2-24 shows a drawing made with this app.</p>
+
+
+<p>
+<strong>Listing 2-18.</strong> Full vine drawing sketch
+<pre><code>
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>setup</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">fullScreen</span>();
+&nbsp;&nbsp;<span style="color: #006699;">noFill</span>();
+&nbsp;&nbsp;<span style="color: #006699;">colorMode</span>(<span style="color: #718A62;">HSB</span>, 360, 99, 99);
+&nbsp;&nbsp;<span style="color: #006699;">strokeWeight</span>(2);
+&nbsp;&nbsp;<span style="color: #006699;">stroke</span>(210);  
+&nbsp;&nbsp;<span style="color: #006699;">background</span>(0, 0, 99);
+}
+
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>draw</b></span>() {
+&nbsp;&nbsp;<span style="color: #669900;">if</span> (<span style="color: #D94A7A;">mousePressed</span>) {
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">line</span>(<span style="color: #D94A7A;">pmouseX</span>, <span style="color: #D94A7A;">pmouseY</span>, <span style="color: #D94A7A;">mouseX</span>, <span style="color: #D94A7A;">mouseY</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #669900;">if</span> (<span style="color: #006699;">random</span>(1) &lt; 0.05) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">PVector</span> dir = <span style="color: #33997E;">new</span> <span style="color: #006699;">PVector</span>(<span style="color: #D94A7A;">mouseX</span> - <span style="color: #D94A7A;">pmouseX</span>, <span style="color: #D94A7A;">mouseY</span> - <span style="color: #D94A7A;">pmouseY</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> a = dir.<span style="color: #006699;">heading</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drawSpiral(<span style="color: #D94A7A;">mouseX</span>, <span style="color: #D94A7A;">mouseY</span>, a);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #669900;">if</span> (<span style="color: #006699;">random</span>(1) &lt; 0.05) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drawFlower(<span style="color: #D94A7A;">mouseX</span>, <span style="color: #D94A7A;">mouseY</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+}
+
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>keyPressed</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">background</span>(0, 0, 99);
+}
+
+<span style="color: #33997E;">void</span> drawFlower(<span style="color: #E2661A;">float</span> xc, <span style="color: #E2661A;">float</span> yc) {
+&nbsp;&nbsp;<span style="color: #006699;">pushMatrix</span>();
+&nbsp;&nbsp;<span style="color: #006699;">pushStyle</span>();
+&nbsp;&nbsp;<span style="color: #006699;">noStroke</span>();
+&nbsp;&nbsp;<span style="color: #006699;">translate</span>(xc, yc);  
+&nbsp;&nbsp;<span style="color: #006699;">fill</span>(<span style="color: #006699;">random</span>(60, 79), <span style="color: #006699;">random</span>(50, 60), 85, 190);
+&nbsp;&nbsp;<span style="color: #006699;">beginShape</span>();
+&nbsp;&nbsp;<span style="color: #E2661A;">int</span> numLobes = <span style="color: #006699;">int</span>(<span style="color: #006699;">random</span>(4, 10)); 
+&nbsp;&nbsp;<span style="color: #669900;">for</span> (<span style="color: #E2661A;">int</span> i = 0; i &lt;= numLobes; i++) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> a = <span style="color: #006699;">map</span>(i, 0, numLobes, 0, <span style="color: #718A62;">TWO_PI</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> a1 = <span style="color: #006699;">map</span>(i + 1, 0, numLobes, 0, <span style="color: #718A62;">TWO_PI</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> r = <span style="color: #006699;">random</span>(10, 50);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x = r * <span style="color: #006699;">cos</span>(a);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y = r * <span style="color: #006699;">sin</span>(a);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x1 = r * <span style="color: #006699;">cos</span>(a1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y1 = r * <span style="color: #006699;">sin</span>(a1);    
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">vertex</span>(0, 0);     
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">vertex</span>(0, 0);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">bezierVertex</span>(x, y, x1, y1, 0, 0);     
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span style="color: #006699;">endShape</span>();
+&nbsp;&nbsp;<span style="color: #006699;">popStyle</span>();
+&nbsp;&nbsp;<span style="color: #006699;">popMatrix</span>();
+}
+
+<span style="color: #33997E;">void</span> drawSpiral(<span style="color: #E2661A;">float</span> xc, <span style="color: #E2661A;">float</span> yc, <span style="color: #E2661A;">float</span> a) {
+&nbsp;&nbsp;<span style="color: #006699;">pushMatrix</span>();
+&nbsp;&nbsp;<span style="color: #006699;">pushStyle</span>();
+&nbsp;&nbsp;<span style="color: #006699;">translate</span>(xc, yc);   
+&nbsp;&nbsp;<span style="color: #006699;">rotate</span>(<span style="color: #718A62;">PI</span> + a);
+&nbsp;&nbsp;<span style="color: #006699;">noFill</span>();
+&nbsp;&nbsp;<span style="color: #006699;">beginShape</span>();
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> maxt = <span style="color: #006699;">random</span>(5, 10);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> maxr = <span style="color: #006699;">random</span>(20, 70);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> sign = (<span style="color: #006699;">random</span>(1) &lt; 0.5) ? -1 : +1;  
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x0 = maxr * <span style="color: #006699;">cos</span>(sign);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y0 = maxr * <span style="color: #006699;">sin</span>(sign);
+&nbsp;&nbsp;<span style="color: #669900;">for</span> (<span style="color: #E2661A;">float</span> t = 1; t &lt; maxt; t += 0.5) {
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> r = maxr/t;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x = r  * <span style="color: #006699;">cos</span>(sign * t) - x0;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y = r  * <span style="color: #006699;">sin</span>(sign * t) - y0;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">vertex</span>(x, y);
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span style="color: #006699;">endShape</span>();
+&nbsp;&nbsp;<span style="color: #006699;">noStroke</span>();
+&nbsp;&nbsp;<span style="color: #006699;">fill</span>(<span style="color: #006699;">random</span>(310, 360), 80, 80);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x1 = (maxr/maxt) * <span style="color: #006699;">cos</span>(sign * maxt) - x0;
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y1 = (maxr/maxt) * <span style="color: #006699;">sin</span>(sign * maxt) - y0;
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> r = <span style="color: #006699;">random</span>(5, 10);
+&nbsp;&nbsp;<span style="color: #006699;">ellipse</span>(x1, y1, r, r);
+&nbsp;&nbsp;<span style="color: #006699;">popStyle</span>();
+&nbsp;&nbsp;<span style="color: #006699;">popMatrix</span>();
+}
+</code></pre>
+</p>
+
+                <p><img class="body-image-landscape" src="imgs/figure-2-24.png" alt="Figure 2-24"></p><p><strong>Figure 2-24.</strong> Output of the vine drawing sketch</p>
+
+                <h3>Summary</h3>
+
+                <p>We have now a general overview of the Processing language, and would be able to some of its functions and variables to draw shapes, set colors, apply transformations, and handle user interaction through the mouse or touchscreen. Even though we covered only a small fraction of all the functionality available in Processing, what we saw here should give us enough means to start exploring algorithmic drawing and to make our own interactive sketches and run them as Android apps.</p>
+
+
+            </section>
+
+        </div>
+
+        <footer class="footinfo">
+            <small>&copy; 2017 Andres Colubri</a>.</small>
+        </footer>
+    </body>
+</html>

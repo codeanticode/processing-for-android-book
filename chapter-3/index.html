@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Merriweather:300">
+        <link rel="icon" type="image/png" href="../favicon.png">
+        <link rel="stylesheet" href="../css/main.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>From Sketch to Play Store</title>
+    </head>
+    
+    <body>
+
+        <header>            
+            <h1 class="title">Processing for Android</h1>
+            <h2 class="title">Create Mobile, Sensor-Aware, and VR Applications Using Processing</h2>
+        </header>
+
+        <div class="group">
+
+            <nav class="site">
+                <ul class="leftnav">
+                   <li><a href="../index.html">Cover</a><span class="navsep">|</span></li>
+                   <li><a href="https://medium.com/@ben_fry/processing-for-android-bef5660769bf" target="_black">Preface</a><span class="navsep">|</span></li>
+                   <li><a id="selected" href="../contents.html">Contents</a><span class="navsep">|</span></li>
+                   <li><a href="https://github.com/Apress/processing-for-android" target="_black">Code examples</a><span class="navsep">|</span></li>
+                   <li><a href="../projects.html">Final projects</a><span class="navsep">|</span></li>
+                   <li><a href="http://www.tkqlhce.com/click-8456721-12831288?url=https%3A%2F%2Fwww.springer.com%2Fus%2Fbook%2F9781484227183%3Futm_medium%3Daffiliate%26utm_source%3Dcommission_junction%26utm_campaign%3D3_nsn6445_product_PID%25zp%26utm_content%3Dus_10092017&cjsku=9781484227183" target="_blank">Buy book</a></li>
+                </ul>
+            </nav>
+      
+            <section class="container main-text">
+                <h2>Chapter 3: From Sketch to Play Store</h2>
+
+                <p>Here we will go through all the steps involved in the creation of a Processing project, from sketching and debugging to exporting the project as a signed app ready for upload to the Google Play Store. We will use the drawing sketch from last chapter as the example project to upload to the store.</p>
+
+                <h3>Sketching and debugging</h3>
+
+                <p>In the previous chapters, we emphasized the importance of “code sketching”, where immediate visual output and quick iteration are central elements to the development of Processing projects. Another crucial component is the identification and resolution of errors or “bugs” in the code, a process called debugging.</p>
+
+                <p>Debugging can take us as much time as writing the code itself. What makes debugging challenging is that some bugs are the result of faulty logic or incorrect calculations, and because there are no typos or any other syntactical errors in the code, Processing is able to run the sketch. Unfortunately, there is no foolproof technique to eliminate all bugs in a program, but Processing provides some utilities to help us with debugging.</p>
+
+                <h4>Getting information from the console</h4>
+                
+                <p>The simplest way to debug a program is printing the values of variables and messages along various points of the execution flow of the program. Processing’s API includes text-printing functions, <code>print()</code> and <code>println()</code>, which output to the console area in the PDE. The only difference between these two functions is that <code>println()</code> adds a new line break at the end, while <code>print()</code> does not. Listing 3-1 shows an sketch using <code>println()</code> to indicate the occurrence of an event (a mouse press in this case), and the value of built-in variable.</p>
+
+
+<p>
+<strong>Listing 3-1.</strong> Using println() in a sketch to show information on the console
+<pre><code>
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>setup</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">fullScreen</span>(); 
+}
+
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>draw</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">println</span>(<span style="color: #7D4793;">&quot;frame #&quot;</span>, <span style="color: #D94A7A;">frameCount</span>);
+}
+
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>mousePressed</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">println</span>(<span style="color: #7D4793;">&quot;Press event&quot;</span>);  
+}
+</code></pre>
+</p>
+
+                <p>Processing’s console shows anything that is printed with these functions, but also warning or error messages indicating a problem in the execution of the sketch (Figure 3-1).</p> 
+
+                <p><img class="body-image-landscape" src="imgs/figure-3-1.png" alt="Figure 3-1"></p><p><strong>Figure 3-1.</strong> PDE’s console outlined with red</p>
+
+                <p>The main problem of printing messages to the console for debugging is that it requires adding these additional function calls for each variable we want to keep track of. Once we are done with debugging, we need remove or comment out all these calls, which can become cumbersome for large sketches.</p>
+
+                <div class="butterbar">
+                Note: Comments in Processing work exactly the same way as in Java: we can comment out a single line of code using two consecutive forward slashes, “//”, and an entire block of text with “/*” at the beginning of the block, and “*/” and the end. We can also use the Comment/Uncomment option under the “Edit” menu in the PDE.</div> 
+
+                <h4>Getting more information with logcat</h4>
+
+                <p>We can obtain a lot of useful information from the Processing console, but sometimes this may not be enough to find out what is wrong with our sketch. The Android SDK includes a number of command line tools that can help us with debugging. The most important SDK tool is adb (Android Debug Bridge), which makes possible the communication between the computer we are using for development, and the device or emulator. In fact, Processing uses adb under the hood to query what devices are available, and to push the sketch to the device or emulator when running it from the PDE.</p>
+
+                <p>We can also use adb manually, for example to get more detailed debug messages. In order to do so, we need to open a terminal console, and once in it we would need to change to the directory where the Android SDK is installed. In case the SDK was automatically installed by Processing, it should be located inside the sketchbook folder, android/sdk subfolder. Within that folder, the SDK tools are found in platform-tools. Once there, we can run the adb tool with the logcat option, which prints out the log with all the messages. For instance, Figure 3-2 shows the sequence of commands we would need on Mac to run logcat.</p>
+
+               <p><img class="body-image-landscape" src="imgs/figure-3-2.png" alt="Figure 3-2"></p><p><strong>Figure 3-2.</strong> Terminal session on Mac displaying the commands to run logcat</p>
+
+               <p>By default, logcat prints all messages generated by the Android device or emulator, not only from the sketch we are debugging, but from all processes that are currently running, so we might get too many messages. The print messages from Processing can be displayed if using logcat with the –I option. Logcat has additional options to only show error messages (-E) or warnings (-W). The full list of options is available on the Google’s developer site (https://developer.android.com/studio/command-line/logcat.html).</p>
+
+               <h4>Using the integrated debugger</h4>
+
+               <p>The Java mode in Processing 3.0 introduced an integrated debugger that makes easier for us to keep track of the internal state of a running sketch. Even though the debugger is not available in the Android mode, we can still use it to debug Android sketches. If a Processing sketch does not rely on Android-specific functionality, then it should be compatible between Android and Java modes, since the code API is (almost) identical between the two modes. In that case, we can momentarily switch to the Java mode to take advantage of its debugger and then come back to the Android mode to continue working on the device or emulator.</p>
+
+               <p>We turn the debugger on by pressing the button with the butterfly icon on the left of the menu bar, next to the mode selector, or selecting the “Enable Debugger” in the Debug menu. Once enabled, we can access a number of additional options in the PDE to use when the sketch is running. For example, we can add “checkpoints” to any line in the code of our sketch. A checkpoint signals where the execution of the sketch should stop to allow us inspecting the value of all the variables in the sketch, both user-defined and built-in.</p>
+
+               <p>We can create a new checkpoint by double clicking on the line number in the left margin of the code editor. A diamond sign will indicate that the line has flagged with a checkpoint. When we run a sketch containing one or more checkpoints, Processing will stop execution when it reaches each checkpoint, at which moment we can inspect the value of the variables using the variable inspector window (Figure 3-3). We resume execution by pressing the continue button on the toolbar. We can also step line by line by pressing the Step button, and see how each variable changes its value after each line.</p>
+
+               <p><img class="body-image-landscape" src="imgs/figure-3-3.png" alt="Figure 3-3"></p><p><strong>Figure 3-3.</strong> Debugging session with the integrated debugger in the Java mode</p>
+
+               <p>All of this functionality in the integrated debugger could help us identify bugs in the code without the need of adding print instructions, although fixing a tricky bug is always challenging and can take a long time even with the debugger. At the end, it comes down to carefully understanding the logic of the code in the sketch and its possible consequences and edge cases, based on information we get from the debugger or print instructions. In this way, we can narrow down the portion of the code where the bug is likely to be.</p>
+
+               <h4>Reporting Processing bugs</h4>
+
+               <p>Sometimes an unexpected or erroneous behavior in a Processing sketch may be due not to a bug in the sketch itself, but in Processing’s core. If you have strong suspicion that you have found a Processing bug, you can report it in the GitHub page of the project. If it is a bug affecting the Android mode, open a new issue in the processing-android repository at https://github.com/processing/processing-android/issues, and include as much information as possible to reproduce the bug and to help the developers examine the issue and eventually fix it.</p>
+
+               <h3>Preparing a sketch for release</h3>
+
+               <p>After debugging a sketch in the PDE, we may want to package it for public release through Google Play Store. When working from the PDE, Processing creates a debug app package that can only for installed on our own device for testing purposes. Creating a app suitable for general distribution from our sketch requires some additional steps and considerations to make sure it can be uploaded to the Play Store.</p>
+
+               <h4>Adjusting for device’s DPI</h4>
+
+               <p>A first step to ready our sketch for public release is to make sure that it can be run on (most) of the Android devices in use. When writing and debugging our sketch, it is often the case that we work with one or only a few different devices, so it may be hard to anticipate issues on hardware we do not have access to. A common situation is that the graphics might look either too big or too small when running our Processing sketches on different devices. The reason for this is that both resolution (number of pixels) and physical screen size can vary quite substantially across phones, tablets and watches, and so graphic elements designed with one resolution in mind and viewed on a screen of a particular size will likely look wrong on another. Since Android is designed to support various combinations of screen sizes and resolutions, we need a way in Processing to adapt the visual design of our sketch so it looks as intended across different devices.</p>
+
+               <p>The ratio of the resolution to the screen size gives us what is called the DPI (dots per inch, which in the context of computer screens is equivalent to pixels per inch, or PPI). The DPI is the basic magnitude to compare across devices. It is important to keep in mind that a higher DPI does not necessarily mean a higher resolution, since two different devices with the same resolution may have different screen sizes. For example, the Galaxy Nexus (4.65" diagonal) has a 720 × 1280 pixels resolution, while the Nexus 7 (7" diagonal) has an 800 × 1280 pixels resolution. The DPIs of these devices are respectively 316 and 216, even though the resolution of the Galaxy Nexus is actually slightly lower than that of the Nexus 7.</p>
+
+               <p>Android classifies devices in density buckets according to the following six generalized densities (a specific device will fall in one of these categories depending on which one is closest to its actual DPI):</p>
+
+               <ul>
+                <li>ldpi (low) ~120dpi</li>
+                <li>mdpi (medium) ~160dpi</li>
+                <li>hdpi (high) ~240dpi</li>
+                <li>xhdpi (extra-high) ~320dpi</li>
+                <li>xxhdpi (extra-extra-high) ~480dpi</li>
+                <li>xxxhdpi (extra-extra-extra-high) ~640dpi</li>
+               </ul>
+
+               <p>The generalized density levels are important in Processing to generate the app icons, as we will see later in this chapter, but not so much when writing our code. In order to make sure that the visual elements in our sketch scale properly across different devices, there is another parameter from Android that Processing makes available through its API. This is the “display density”, a number that represents how much bigger (or smaller) is the pixel in our device when compared with a reference 160 DPI screen (for example a 320x480, 3.5" screen). Thus, on a 160 DPI screen this density value will be 1; on a 120 DPI screen it would be .75; etc.</p>
+
+              <div class="butterbar">Note: <a href="https://developer.android.com/guide/practices/screens_support.html" target="_black">Google’s API Guide</a> on Multiple Screen Support gives detailed information about the density independence on Android.</div> 
+
+              <p>The display density is available in Processing as the constant named <code>displayDensity</code>, which we can use from anywhere in our code. The simplest way of adjusting the output to the device’s DPI is to multiply the size of all of the graphical elements in the sketch by <code>displayDensity</code>, which is the approach in Listing 3-2. As we can see in Figure 3-4, the size of the circles drawn by the sketch is the same across devices with different DPIs. Also, this example uses <code>fullScreen()</code> to initialize the size of the output of our sketch to the entire screen, regardless of its resolution.</p>
+
+<p>
+<strong>Listing 3-2.</strong> Using displayDensity to adjust our sketch to different screen sizes and resolutions
+<pre><code>
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>setup</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">fullScreen</span>();
+&nbsp;&nbsp;<span style="color: #006699;">noStroke</span>();
+}
+
+<span style="color: #33997E;">void</span> <span style="color: #006699;"><b>draw</b></span>() {
+&nbsp;&nbsp;<span style="color: #006699;">background</span>(0);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> r = 50 * displayDensity;
+&nbsp;&nbsp;<span style="color: #E2661A;">int</span> maxi = <span style="color: #006699;">int</span>(<span style="color: #D94A7A;">width</span>/r);
+&nbsp;&nbsp;<span style="color: #E2661A;">int</span> maxj = <span style="color: #006699;">int</span>(<span style="color: #D94A7A;">height</span>/r);
+&nbsp;&nbsp;<span style="color: #669900;">for</span> (<span style="color: #E2661A;">int</span> i = 0; i &lt;= maxi; i++) {
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x = <span style="color: #006699;">map</span>(i, 0, maxi, 0, <span style="color: #D94A7A;">width</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #669900;">for</span> (<span style="color: #E2661A;">int</span> j = 0; j &lt;= maxj; j++) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y = <span style="color: #006699;">map</span>(j, 0, maxj, 0, <span style="color: #D94A7A;">height</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #006699;">ellipse</span>(x, y, r, r);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+}
+</code></pre>
+</p>
+
+               <p><img class="body-image-landscape" src="imgs/figure-3-4.png" alt="Figure 3-4"></p><p><strong>Figure 3-4.</strong> From left to right, output of our sketch on a Samsung Galaxy Tab 4 (7”, 1280x800 px, 216 dpi), Nexus 5X (5.2”, 1920x800 px, 424 dpi),and a Moto E (4.3”, 960x540 px, 256 dpi)</p>
+
+               <p>We can return now to our vines drawing sketch from the last chapter, and add <code>displayDensity</code> in the parts of the code where we need to scale the graphics. More specifically, any variable or value that represents the size of shapes or position of vertices on the screen should be multiplied by <code>displayDensity</code>. Listing 3-3 shows these changes applied to the original drawing sketch.</p>
+
+<p>
+<strong>Listing 3-3.</strong> Adding displayDensity to the vine drawing sketch from Chapter 2
+<pre><code>
+<span style="color: #33997E;">void</span> drawFlower(<span style="color: #E2661A;">float</span> xc, <span style="color: #E2661A;">float</span> yc) {
+&nbsp;&nbsp;<span style="color: #006699;">pushMatrix</span>();
+&nbsp;&nbsp;<span style="color: #006699;">pushStyle</span>();
+&nbsp;&nbsp;<span style="color: #006699;">noStroke</span>();
+&nbsp;&nbsp;<span style="color: #006699;">translate</span>(xc, yc);  
+&nbsp;&nbsp;<span style="color: #006699;">fill</span>(<span style="color: #006699;">random</span>(60, 79), <span style="color: #006699;">random</span>(50, 60), 85, 190);
+&nbsp;&nbsp;<span style="color: #006699;">beginShape</span>();
+&nbsp;&nbsp;<span style="color: #E2661A;">int</span> numLobes = <span style="color: #006699;">int</span>(<span style="color: #006699;">random</span>(4, 10)); 
+&nbsp;&nbsp;<span style="color: #669900;">for</span> (<span style="color: #E2661A;">int</span> i = 0; i &lt;= numLobes; i++) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> a = <span style="color: #006699;">map</span>(i, 0, numLobes, 0, <span style="color: #718A62;">TWO_PI</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> a1 = <span style="color: #006699;">map</span>(i + 1, 0, numLobes, 0, <span style="color: #718A62;">TWO_PI</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #E2661A;">float</span> r = <span style="color: #006699;">random</span>(10, 50) * displayDensity;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...
+&nbsp;&nbsp;}&nbsp;&nbsp;
+}
+
+<span style="color: #33997E;">void</span> drawSpiral(<span style="color: #E2661A;">float</span> xc, <span style="color: #E2661A;">float</span> yc, <span style="color: #E2661A;">float</span> a) {
+&nbsp;&nbsp;<span style="color: #006699;">pushMatrix</span>();
+&nbsp;&nbsp;<span style="color: #006699;">pushStyle</span>();
+&nbsp;&nbsp;<span style="color: #006699;">translate</span>(xc, yc);   
+&nbsp;&nbsp;<span style="color: #006699;">rotate</span>(<span style="color: #718A62;">PI</span> + a);
+&nbsp;&nbsp;<span style="color: #006699;">noFill</span>();
+&nbsp;&nbsp;<span style="color: #006699;">beginShape</span>();
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> maxr = <span style="color: #006699;">random</span>(20, 70) * displayDensity;
+&nbsp;&nbsp;...&nbsp;
+&nbsp;&nbsp;<span style="color: #006699;">fill</span>(<span style="color: #006699;">random</span>(310, 360), 80, 80);
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> x1 = (maxr/maxt) * <span style="color: #006699;">cos</span>(sign * maxt) - x0;
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> y1 = (maxr/maxt) * <span style="color: #006699;">sin</span>(sign * maxt) - y0;
+&nbsp;&nbsp;<span style="color: #E2661A;">float</span> r = <span style="color: #006699;">random</span>(5, 10) * displayDensity;
+&nbsp;&nbsp;<span style="color: #006699;">ellipse</span>(x1, y1, r, r);
+&nbsp;&nbsp;<span style="color: #006699;">popStyle</span>();
+&nbsp;&nbsp;<span style="color: #006699;">popMatrix</span>();
+}&nbsp;&nbsp;
+</code></pre>
+</p>
+
+               <h4>Using the emulator</h4>
+
+               <p>We briefly discussed the emulator in the first chapter. Even when we have our own device, the emulator could be useful, because it allows us to test hardware configurations we do not have access to. Processing creates a default Android Virtual Device (AVD) to run in the emulator, but with a resolution of only 480x800 pixels to ensure a reasonable performance across different computers. We can create other AVDs with different properties to test our sketches on, using the command line tool avdmanager, included in the Android SDK. We have to keep in mind that the emulator will likely run slower than an actual device, especially if creating high-resolution AVDs or with other high-end capabilities.</p>
+
+               <p>Since avdmanager is a command line tool, we first need to open a terminal console, change to the tools directory where avdmanager and also the emulator launcher are located inside the SDK folder. Figure 3-5 shows the sequence of steps to create a new AVD using the device definition for a Nexus 5X phone, and then launching this AVD with the emulator</p>
+
+               <p><img class="body-image-landscape" src="imgs/figure-3-5.png" alt="Figure 3-5"></p><p><strong>Figure 3-5.</strong> Creating and launching a new AVD from the command line using the avdmanager and emulator tools</p>
+
+               <p>In the line running the avdmanager command, we provided four arguments:</p>
+
+               <ul>
+                <li>-n n5x: The name of the AVD, which could any name we wish to use.</li>
+                <li>-k “system-images;android-26;google_apis;x86”: The SDK package to use for the AVD, to find out which SDK packages are available in our SDK, we need to look at the system-images subfolder inside the SDK folder.</li>
+                <li>-d: “Nexus 5X”: A device definition containing the hardware parameters of the device we want to emulate. We can list all the available device definitions by running the command ‘./avdmanager list devices’</li>
+                <li>-p ~/Documents/Processing/android/avd/n5x: The folder where will store this AVD, in this case we are using “android/avd/n5x” inside the sketchbook folder, since this is the default location the Android mode uses for the default AVDs.</li>
+               </ul>
+
+               <p>The next line in Figure 3-5 actually launches the emulator, but before doing that, we need to set up the AVD’s “skin” telling the emulator the actual dimensions it should render the phone screen at. Currently, the avdmanager does not have an option to set the device skin, but we can add it manually to the AVD’s configuration file, which in this example, is located inside the “~/Documents/Processing/android/avd/n5x”, and named “config.ini”. We can open this file with any text editor, and then add the line “skin.name=widthxheight” at the end, using the width and height of the device, although we can also use other values of our preference, as shown in Figure 3-6.</p>
+
+               <p><img class="body-image-landscape" src="imgs/figure-3-6.png" alt="Figure 3-6"></p><p><strong>Figure 3-6.</strong> Adding a skin resolution to the AVD’s config.ini file</p>
+
+               <p>Once we have added the skin resolution to the config.ini file of our AVD, we can run the emulator line shown before, which includes the following arguments:</p>
+
+               <ul>
+                <li>-avd n5x: The name of the AVD we want to launch.</li>
+                <li>-gpu auto: Enables the emulator to use hardware acceleration on the computer to render the AVD’s screen faster, if it is available. Otherwise, it will use a slower software renderer.</li>
+                <li>-port 5566: Sets the TCP port number to connect the console and adb with the emulator.</li>
+               </ul>
+
+               <p>In order to use our new AVD in place of Processing’s default, we should launch it manually as we did in this example, and then Processing will install our sketches in it instead of the default AVD. However, we need to make sure to use the right port parameter, because Processing will only be able to communicate with phone emulators running on port 5566, and watch emulators on port 5576.</p>
+
+               <div class="butterbar">Note: Google’s Android developer site includes pages on <a href="https://developer.android.com/studio/command-line/avdmanager.html" target="_black">avdmanager</a> and running the emulator from the <a href="https://developer.android.com/studio/run/emulator-commandline.html" target="_black">command line</a>, where we can find more information about these tools.</div>
+
+               <h4>Setting icons and package name</h4>
+
+               <p>Android apps require icons of various sizes to be displayed at different pixel densities in the app launcher menu. Processing uses a set of default, generic icons when running a sketch from the PDE, but these icons should not be used for a public release.</p>
+
+               <p>In order to add our own icons to the project, we need to create the following files: icon-36, icon-48, icon-72, icon-96, icon-144, and icon-192 in .PNG format, for the ldpi (36x36), mdpi (48x48), hdpi (72x27), xhdpi (96x96), xxhdpi (144x144), and xxxhdpi (192x192) resolutions. Once we have these files, we must place them in the sketch's folder before exporting the signed package.</p>
+
+               <p>For the vine drawing app from the last chapter, we will use the set of icons shown in Figure 3-7.</p>
+
+               <p><img class="body-image-landscape" src="imgs/figure-3-7.png" alt="Figure 3-7"></p><p><strong>Figure 3-7.</strong> Set of icons for the vine drawing app</p>
+
+               <p>Google has published a set of guidelines and resources for icon creation, according to their material UI style, available <a href="https://www.google.com/design/spec/style/icons.html" target="_black">here</a>.</p>
+
+               <h4>Setting package name and version</h4>
+
+               <p>Apps in the Google App Store are uniquely identified by a package name, which is a string of text that looks something like com.example.helloworld. This package name follows the Java package-naming convention, where the app name (helloworld) is last, preceded by the website of the company or person developing the app in reverse order (com.example).</p>
+
+               <p>Processing constructs this package name automatically by prepending "processing.test" to the sketch name. We can change the default package name by editing the manifest.xml file that Processing generates in the sketch folder after we run it for the first time from the PDE (either on a device or in the emulator). We can also set the version code and version name. For example, in the following manifest file generated by Processing, the package name is com.example.vines_draw, the version code 10, and version name 0.5.4:</p>
+
+<pre><code>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;manifest xmlns:android="http://schemas.android.com/apk/res/android" 
+android:versionCode="10" android:versionName="0.5.4"
+package="com.example"&gt;
+    &lt;uses-sdk android:minSdkVersion="17" android:targetSdkVersion="25"/&gt;
+    &lt;application android:icon="@drawable/icon" 
+                 android:label="Vines Draw"&gt;
+        &lt;activity android:name=".MainActivity" 
+                  android:theme=
+                  "@style/Theme.AppCompat.Light.NoActionBar.FullScreen"&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name="android.intent.action.MAIN"/&gt;
+                &lt;category android:name="android.intent.category.LAUNCHER"/&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre>
+
+               <p>Note that our app’s package name must be unique, since there cannot be two apps on the Google Play Store with the same package name. Also, we should set the application name by using the android:label attribute in the application tag. Android will use this label as the visible title of the app in the launcher and other parts of the UI.</p>
+
+               <h4>Exporting as a Signed Package</h4>
+
+               <p>Android Mode simplifies the publishing of our sketch by signing and aligning the app so we can upload it to the Google Play Developer Console very easily. <a href="https://developer.android.com/studio/publish/app-signing.html" target="_black">The signing process</a> involves creating a public-key certificate that contains the public key of a public/private key pair, so that when the app package is signed, it embeds a unique fingerprint that associates the package with its author. This ensures that any future updates of the app are authentic and come from the o﻿riginal author.﻿ The alignment is required to optimize data storage inside the package, which reduces the amount of RAM consumed when running the application. While Processing will do the signing and alignment for us, we still need to create a Google Play Developer account to use the Play Console, which requires paying a one-time fee of $25 at the time of this writing and as detailed <a href="https://support.google.com/googleplay/android-developer/answer/6112435" target="_black">here</a>. From Processing, all we need to do is select the “Export Signed Package” option under the File menu (Figure 3-8).</p>
+
+               <p><img class="body-image-landscape" src="imgs/figure-3-8.png" alt="Figure 3-8"></p><p><strong>Figure 3-8.</strong> “Export Signed Package” option in the PDE’s File menu</p>
+
+               <p>After selecting this option, Processing will ask to create a new keystore to save the release key to sign the app package. The keystore requires a password and additional information about the keystore issuer (name, organization, city, state, country), although those are optional. The Keystore Manager window that allows us to enter all this information is displayed in Figure 3-9.</p>
+
+               <p><img class="body-image-landscape" src="imgs/figure-3-9.png" alt="Figure 3-9"></p><p><strong>Figure 3-9.</strong> Entering the information needed to create a keystore in Processing</p>
+
+               <p>Remember this password, as you will have to use it every time you export a new signed package. Even though you could reset it and create a new key, you should keep in mind that you cannot change keys once an app is uploaded to the Play Store—any subsequent updates to the app need to be signed by the same key as the original, or else it will be denied, and you will have to create a new package with a new key.</p>
+
+               <p>The signed (and aligned) package will be saved in the build subfolder inside the sketch’s folder, under the name [Sketch name in lowercase]_release_signed_aligned.apk. Once we have this package, we can follow the <a href="https://support.google.com/googleplay/android-developer/answer/113469" target="_black">instructions from Google</a> to complete the app-publishing process.</p>
+
+               <p>If we follow all these steps with our vine-drawing sketch, we should be able to generate a signed and aligned package that is ready to upload to the Play Store. We can also install it manually on our device using the adb tool (see Figure 3-10).</p>
+
+               <p><img class="body-image-landscape" src="imgs/figure-3-10.png" alt="Figure 3-10"></p><p><strong>Figure 3-10.</strong> Installing a signed package from the command line using adb</p>
+
+               <p>If we install the final app package either manually or through the Play Store, we should see it in the app launcher with the icon we created for it (Figure 3-11).</p>
+
+               <p><img class="body-image-landscape" src="imgs/figure-3-11.png" alt="Figure 3-11"></p><p><strong>Figure 3-11.</strong> The vine-drawing app installed on our device</p>
+
+               <h3>Summary</h3>
+
+               <p>This final chapter in the first section of the book covered a number of more technical topics, ranging from debugging our code using Processing’s console, the integrated debugger, or the logcat option in adb, scaling the output of our sketches according to the device’s DPI, and finally exporting our sketch as signed package to upload to the Play Store. With these tools, we are ready to share our creations with all the Android users around the entire world!</p>
+
+            </section>
+
+        </div>
+
+        <footer class="footinfo">
+            <small>&copy; 2017 Andres Colubri</a>.</small>
+        </footer>
+    </body>
+</html>

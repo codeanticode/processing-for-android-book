@@ -1,0 +1,315 @@
+@import url("reset.css");
+
+/*
+  ========================================
+  Config
+  ========================================
+*/
+
+footer
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+/*
+  ========================================
+  Typography
+  ========================================
+*/
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Merriweather', serif;
+  font-weight: 300;  
+  font-style: bold;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+h3 {
+  font-size: 18px;  
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+p {
+  margin-bottom: 20px;
+}
+
+pre {
+  margin-bottom: 20px; 
+}
+
+strong {
+  font-family: 'Merriweather', serif;
+  font-size: 17px;
+  font-style: bold;
+}
+
+/*
+  ========================================
+  Layout
+  ========================================
+*/
+
+.group:before,
+.group:after {
+  content: "";
+  display: table;
+}
+.group:after {
+  clear: both;
+}
+.group {
+  clear: both;
+  *zoom: 1;
+}
+
+a {
+  text-decoration: none;
+  font-weight: normal;
+  color: #2c7bb5;
+}
+
+header {
+  background-color: #000000;
+  width: 100%;
+  height: 140px;
+  float: left;
+}
+
+h1.title {
+  max-width: 600px;
+  width: 100%;
+  margin-top: 40px;
+  margin-left: 190px;
+  text-align: center;
+  color: #fdc300;
+  font-family: 'Merriweather', serif;
+  font-size: 50px;
+}
+
+h2.title {
+  max-width: 600px;
+  width: 100%;  
+  margin-top: 30px;
+  margin-left: 190px;
+  text-align: center;
+  color: #ffffff;
+  font-family: 'Merriweather', serif;
+  font-size: 18px;
+  font-style: normal;
+}
+
+#selected {
+  color: black;
+}
+
+nav.site {
+  float: left;  
+  width: 150px;
+  padding: 40px 20px 20px;
+  line-height: 30px;
+  font-family: 'Merriweather', serif;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 600px;
+  width: 100%;
+  padding: 40px 20px 20px;
+  background-color: #ffffff;
+  font-family: 'Merriweather', serif;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.footinfo {
+  margin-left: 170px;
+  max-width: 640px;
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+  background-color: #ffffff;
+  font-family: 'Merriweather', serif;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+/*
+  ========================================
+  Site Style
+  ========================================
+*/
+
+small {
+  font-size: 85%;
+}
+
+section {
+  float: left;
+  margin: 0 1.5%;
+}
+
+body {
+  color: #888;
+  font: 300 16px/22px "Lato", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+code {
+  font-family: monospace, "Courier New", Courier;
+}
+
+sup { 
+  vertical-align: super;
+  font-size: smaller;
+}
+
+b {
+    font-weight: bold;
+}
+
+.body-image-landscape {
+  max-width: 480px;  
+  width: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;  
+}
+
+.body-image-portrait {
+  max-height: 480px;  
+  display: block;
+  margin-left: auto;
+  margin-right: auto;  
+}
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.butterbar {
+  font-size: 120%;
+  line-height: 135%;
+  padding: 1em;
+  background: #fdc300;
+  border: 0px solid #fdc300;
+
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+/*
+  ========================================
+  Lists
+  ========================================
+*/
+
+ul {
+  display: block;
+  list-style: disc;
+  padding-left: 12px;
+}
+
+ol {
+  display: block;
+  list-style: decimal;
+  padding-left: 12px;  
+}
+
+ul.leftnav {
+  margin-left: -5px;
+  list-style: none;
+}
+
+span.navsep {
+  visibility: hidden;
+}
+
+/*
+  ========================================
+  Media queries
+  ========================================
+*/
+
+@media screen and (max-width: 830px) {
+  /* Config when the width of the screen is less than 860 */
+
+  nav.site {
+    width: 90%;
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+
+  nav.site ul li {
+    display: inline-block;
+    display: inline;
+  } 
+
+  h1.title {
+    margin-left: 0px;
+    font-size: 40px;
+  }
+  h2.title {
+    margin-left: 0px;
+    font-size: 15px;
+  }  
+
+  span.navsep {
+    visibility: visible;
+  }  
+
+  .container {
+    width: 90%;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-top: 20px;
+  }
+
+  .footinfo {
+    width: 90%;
+    padding-left: 5%;
+    padding-right: 5%;
+    margin-left: 0px;
+  }    
+}
+
+
+@media screen and (max-width: 510px) {
+  h1.title {
+    margin-top: 15px;
+    line-height: 1.5;
+  } 
+
+  h2.title {
+    visibility: hidden;
+  } 
+}
+
+@media screen and (max-width: 300px) {
+   h1.title {
+    margin-top: 10px;
+    font-size: 30px;
+  }  
+
+  .body-image-portrait {
+    max-width: 300px;
+    width: 100%;
+    height: 100%;
+  }
+}
