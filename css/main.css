@@ -6,7 +6,7 @@
   ========================================
 */
 
-footer
+*,
 *:before,
 *:after {
   -webkit-box-sizing: border-box;
@@ -118,7 +118,7 @@ h2.title {
 
 nav.site {
   float: left;  
-  width: 150px;
+  width: 190px;
   padding: 40px 20px 20px;
   line-height: 30px;
   font-family: 'Merriweather', serif;
@@ -136,8 +136,8 @@ nav.site {
 }
 
 .footinfo {
-  margin-left: 170px;
-  max-width: 640px;
+  margin-left: 190px;
+  max-width: 600px;
   width: 100%;
   padding: 20px;
   text-align: center;
@@ -251,7 +251,7 @@ span.navsep {
   /* Config when the width of the screen is less than 860 */
 
   nav.site {
-    width: 90%;
+    width: 100%;
     padding-left: 5%;
     padding-right: 5%;
   }
@@ -275,14 +275,14 @@ span.navsep {
   }  
 
   .container {
-    width: 90%;
+    width: 100%;
     padding-left: 5%;
     padding-right: 5%;
     padding-top: 20px;
   }
 
   .footinfo {
-    width: 90%;
+    width: 100%;
     padding-left: 5%;
     padding-right: 5%;
     margin-left: 0px;
