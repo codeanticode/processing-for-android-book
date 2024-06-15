@@ -1,3 +1,3 @@
-# Processing for Android website
+# Processing for Android book website
 
-Just a simple static site with links to relevant content: preface, sample chapters, final projects, examples, and book purchase from Springer.
+Just a simple static site with links to relevant content: cover, sample chapters, code examples, and book order from Springer and Amazon.
