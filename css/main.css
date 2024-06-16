@@ -128,7 +128,7 @@ nav.site {
 	z-index: 2;
 
   float: left;
-  width: 190px;
+  width: 250px;
   padding: 40px 20px 20px;
   line-height: 30px;
   font-family: 'Merriweather', serif;
@@ -136,7 +136,7 @@ nav.site {
 
 .container {
   /* Configuration when the header and the site naviation are fixed */
-  margin-left: 190px;
+  margin-left: 250px;
   margin-top: 140px;
   margin-right: 0;
   margin-bottom: 0;
